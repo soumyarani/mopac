@@ -432,7 +432,6 @@ class MOPAC(RLAlgorithm):
         if mopac:
             # repeat initial states for mppi
             obs = np.repeat(obs, self.repeats, axis=0)
-
             x_acts = np.zeros((self._rollout_batch_size*self.repeats, self._rollout_length, *self._action_shape))
             x_obs = np.zeros((self._rollout_batch_size*self.repeats, self._rollout_length, *self._observation_shape))
             x_total_reward = np.zeros((self._rollout_batch_size*self.repeats, self._rollout_length, 1))
@@ -446,7 +445,7 @@ class MOPAC(RLAlgorithm):
         for t in range(horiz):
             if mopac:
                 # first action from control sequence
-                #act = self.U[:,t]
+                # act = self.U[:,t]
                 act = self._policy.actions_np(obs)
 
                 # add noise and clip
@@ -497,22 +496,44 @@ class MOPAC(RLAlgorithm):
                 i = int(l/self.repeats)
                 r = range(l, l+self.repeats)
 
+                '''
                 # cum reward of rollout
                 s = np.sum(x_total_reward[r], axis=1)
 
                 # normalize cum reward
-                alpha = np.exp(1/lambda_ * (s - np.max(s)))
+                alpha = np.exp(1 / lambda_ * (s - np.max(s)))
                 omega = alpha / (np.sum(alpha) + 1e-6)
+                '''
+
+                c = -np.sum(x_total_reward[r], axis=1).squeeze()
+                elite_indices = c.argsort()[:self.mpc_elite]
+                # print("elite_indices", elite_indices)
+
+                weighted_noise = np.array([self.noise[l+j, :, :] * c[j] for j in elite_indices])
+
+                grads = np.sum(weighted_noise, axis=0)
+                grad_m = grads / np.sum(c[elite_indices])
+
+                # print("weighted _noise", weighted_noise)
+                # print("grads", grads)
+                # print("grad means", grad_m)
+
+                # u_delta_cem = np.sum((c[elite_indices] * self.noise[l+elite_indices].T).T, axis=0)
+                # u_delta_cem /= np.sum(c[elite_indices])
+                # u_delta = np.sum((omega.squeeze() * self.noise[r].T).T, axis=0)
+                # print("u delta_cem", u_delta_cem)
+                # print("u delta", u_delta)
 
                 # compute control offset (most important part in mppi)
-                u_delta = np.sum((omega.squeeze() * self.noise[r].T).T, axis=0)
-                # print(u_delta)
+                # u_delta = np.sum((omega.squeeze() * self.noise[r].T).T, axis=0)
 
                 # tweak control (duplicated across range)
-                #self.U[r] += 1 * u_delta
-                #self.U[r] = np.clip(self.U[r], -self.uclip, self.uclip)
+                # self.U[r] += 1 * u_delta
+                # self.U[r] = np.clip(self.U[r], -self.uclip, self.uclip)
 
-                x_acts[r] += 1 * u_delta
+                # x_acts[r] += 1 * u_delta
+
+                x_acts[r] += grad_m
                 x_acts[r] = np.clip(x_acts[r], -self.uclip, self.uclip)
 
                 # nan check
@@ -521,12 +542,13 @@ class MOPAC(RLAlgorithm):
                     raise Exception("action contains nan value")
 
                 # store first initial observation (and action sequence) belonging to action sequence
+
                 x_opt_obs[i] = x_obs[l][0]  # initial observation
-                #x_opt_acts[i] = self.U[l][:self._rollout_length]  # truncate
+                # x_opt_acts[i] = self.U[l][:self._rollout_length]  # truncate
                 x_opt_acts[i] = x_acts[l][:self._rollout_length]  # truncate
 
                 # shift all elements to the left along horizon (for next env step)
-                #self.U[r] = np.roll(self.U[r], -1, axis=1)
+                # self.U[r] = np.roll(self.U[r], -1, axis=1)
 
             # rollout trajectories using mppi control action sequences to generate samples
             # fix model inds
@@ -853,10 +875,11 @@ class MOPAC(RLAlgorithm):
     def _init_training(self):
         self._update_target(tau=1.0)
 
-    def _init_mppi(self, hl=0.4, horiz=15, noise_mu=0., noise_sigma=0.5, uclip=1.4, lambda_=1.0, repeats=100):
+    def _init_mppi(self, hl=0.4, horiz=15, noise_mu=0., noise_sigma=0.5, uclip=1.4, lambda_=1.0, repeats=100, mpc_elite=10):
         action_len = self._action_shape[0]
         obs_len = self._observation_shape[0]
         self.repeats = repeats
+        self.mpc_elite = mpc_elite
         self.U = np.random.uniform(low=-hl, high=hl, size=(self._rollout_batch_size*repeats, horiz, action_len))
         self.noise = np.random.normal(loc=noise_mu, scale=noise_sigma, size=(self._rollout_batch_size*repeats, horiz, action_len))
         self.uclip = uclip
