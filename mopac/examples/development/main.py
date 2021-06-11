@@ -49,6 +49,10 @@ class ExperimentRunner(tune.Trainable):
             get_environment_from_params(environment_params['evaluation'])
             if 'evaluation' in environment_params
             else training_environment)
+        mod_environment_params= environment_params
+        mod_environment_params['training']['task']='v8'
+        changing_environment = self.training_environment = (
+            get_environment_from_params(mod_environment_params['training']))
 
         replay_pool = self.replay_pool = (
             get_replay_pool_from_variant(variant, training_environment))
@@ -70,6 +74,7 @@ class ExperimentRunner(tune.Trainable):
         self.algorithm = get_algorithm_from_variant(
             variant=self._variant,
             training_environment=training_environment,
+            changing_environment=changing_environment,
             evaluation_environment=evaluation_environment,
             policy=policy,
             initial_exploration_policy=initial_exploration_policy,

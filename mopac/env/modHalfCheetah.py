@@ -7,7 +7,7 @@ xml_directory = str(os.path.dirname(os.path.realpath(__file__))) + '/assets/'
 
 class HalfCheetahModifiedBaseEnv(mujoco_env.MujocoEnv, utils.EzPickle):
     def __init__(self):
-        mujoco_env.MujocoEnv.__init__(self, xml_directory + 'half_cheetah_modified_base.xml', 5)
+        mujoco_env.MujocoEnv.__init__(self, xml_directory + 'half_cheetah_modified_leg.xml', 5)
         utils.EzPickle.__init__(self)
 
     def step(self, action):
@@ -27,12 +27,7 @@ class HalfCheetahModifiedBaseEnv(mujoco_env.MujocoEnv, utils.EzPickle):
             self.sim.data.qvel.flat,
         ])
 
-    def reset_model(self, change_model=False):
-
-        if change_model:
-            new_model = 'half_cheetah_modified_leg.xml'
-            mujoco_env.MujocoEnv.__init__(self, xml_directory + new_model, 5)
-            utils.EzPickle.__init__(self)
+    def reset(self):
 
         qpos = self.init_qpos + self.np_random.uniform(low=-.1, high=.1, size=self.model.nq)
         qvel = self.init_qvel + self.np_random.randn(self.model.nv) * .1

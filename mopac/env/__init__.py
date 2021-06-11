@@ -9,6 +9,13 @@ MOPAC_ENVIRONMENT_SPECS = (
         'id': 'HumanoidTruncatedObs-v2',
         'entry_point': (f'mopac.env.humanoid:HumanoidTruncatedObsEnv'),
     },
+    {
+        'id':'HalfCheetah-v8',
+        'entry_point':(f'mopac.env.modHalfCheetah:HalfCheetahModifiedBaseEnv'),
+
+    }
+
+
 )
 
 def register_mopac_environments():
