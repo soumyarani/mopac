@@ -215,7 +215,7 @@ class MOPAC(RLAlgorithm):
 
         for self._epoch in gt.timed_for(range(self._epoch, self._n_epochs)):
             
-            if self._epoch==1: training_environment = changing_environment
+            if self._epoch==30: training_environment = changing_environment
             self._epoch_before_hook()
             gt.stamp('epoch_before_hook')
 

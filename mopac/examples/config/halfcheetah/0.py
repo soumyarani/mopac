@@ -5,7 +5,7 @@ params = {
     'task': 'v2',
 
     'log_dir': '~/ray_mopac/',
-    'exp_name': 'entropy0',
+    'exp_name': 'entropy2',
 
     'kwargs': {
         'epoch_length': 1000,
