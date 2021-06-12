@@ -36,7 +36,7 @@ class MOPAC(RLAlgorithm):
     def __init__(
             self,
             training_environment,
-            changing_environment,
+            #changing_environment,
             evaluation_environment,
             policy,
             Qs,
@@ -128,7 +128,7 @@ class MOPAC(RLAlgorithm):
         self._writer = Writer(self._log_dir)
 
         self._training_environment = training_environment
-        self._changing_environment = changing_environment
+        #self._changing_environment = changing_environment
         self._evaluation_environment = evaluation_environment
         self._policy = policy
 
@@ -193,7 +193,7 @@ class MOPAC(RLAlgorithm):
             pool (`PoolBase`): Sample pool to add samples to
         """
         training_environment = self._training_environment
-        changing_environment = self._changing_environment
+        #changing_environment = self._changing_environment
         evaluation_environment = self._evaluation_environment
         policy = self._policy
         pool = self._pool

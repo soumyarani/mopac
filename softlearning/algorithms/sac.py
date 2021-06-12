@@ -26,6 +26,7 @@ class SAC(RLAlgorithm):
     def __init__(
             self,
             training_environment,
+            #changing_environment,
             evaluation_environment,
             policy,
             Qs,
@@ -71,6 +72,7 @@ class SAC(RLAlgorithm):
         super(SAC, self).__init__(**kwargs)
 
         self._training_environment = training_environment
+        #self._changing_environment = changing_environment
         self._evaluation_environment = evaluation_environment
         self._policy = policy
 
