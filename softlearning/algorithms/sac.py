@@ -41,7 +41,7 @@ class SAC(RLAlgorithm):
             tau=5e-3,
             target_update_interval=1,
             action_prior='uniform',
-            reparameterize=False,
+            reparameterize=True,
             store_extra_policy_info=False,
 
             save_full_state=False,

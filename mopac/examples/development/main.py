@@ -79,9 +79,9 @@ class ExperimentRunner(tune.Trainable):
             policy=policy,
             initial_exploration_policy=initial_exploration_policy,
             Qs=Qs,
-            Vs=Vs,
+            #Vs=Vs,
             pool=replay_pool,
-            static_fns=static_fns,
+            #static_fns=static_fns,
             sampler=sampler,
             session=self._session)
 
