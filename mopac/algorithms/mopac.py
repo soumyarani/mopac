@@ -36,7 +36,7 @@ class MOPAC(RLAlgorithm):
     def __init__(
             self,
             training_environment,
-            changing_environment,
+            #changing_environment,
             evaluation_environment,
             policy,
             Qs,
@@ -128,7 +128,7 @@ class MOPAC(RLAlgorithm):
         self._writer = Writer(self._log_dir)
 
         self._training_environment = training_environment
-        self._changing_environment = changing_environment
+        #self._changing_environment = changing_environment
         self._evaluation_environment = evaluation_environment
         self._policy = policy
 
@@ -193,7 +193,7 @@ class MOPAC(RLAlgorithm):
             pool (`PoolBase`): Sample pool to add samples to
         """
         training_environment = self._training_environment
-        changing_environment = self._changing_environment
+        #changing_environment = self._changing_environment
         evaluation_environment = self._evaluation_environment
         policy = self._policy
         pool = self._pool
@@ -215,7 +215,7 @@ class MOPAC(RLAlgorithm):
 
         for self._epoch in gt.timed_for(range(self._epoch, self._n_epochs)):
             
-            if self._epoch==30: training_environment = changing_environment
+            #if self._epoch==0: training_environment = changing_environment
             self._epoch_before_hook()
             gt.stamp('epoch_before_hook')
 
@@ -534,6 +534,9 @@ class MOPAC(RLAlgorithm):
                 # tweak control (duplicated across range)
                 # self.U[r] += 1 * u_delta
                 # self.U[r] = np.clip(self.U[r], -self.uclip, self.uclip)
+                #x_acts = x_acts + (alpha)(noise)
+                #x_acts = x_acts + (alpha)(sampled_act-x_act)
+                #x_acts = (1-alpha)x_acts + (alpha)(sampled_act)
 
                 # x_acts[r] += 1 * u_delta
 
