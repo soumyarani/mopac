@@ -25,7 +25,7 @@ class RLAlgorithm(tf.contrib.checkpoint.Checkpointable):
             sampler,
             n_epochs=1000,
             train_every_n_steps=1,
-            n_train_repeat=1,
+            n_train_repeat=40,
             max_train_repeat_per_timestep=5,
             n_initial_exploration_steps=0,
             initial_exploration_policy=None,
