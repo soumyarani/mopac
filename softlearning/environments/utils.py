@@ -3,6 +3,10 @@ from .adapters.gym_adapter import (
     GymAdapter,
 )
 
+from .adapters.dmc_adapter import (
+    DmcAdapter,
+)
+
 import pdb
 
 ENVIRONMENTS = {
@@ -11,6 +15,7 @@ ENVIRONMENTS = {
 
 ADAPTERS = {
     'gym': GymAdapter,
+    'dmc': DmcAdapter,
 }
 
 

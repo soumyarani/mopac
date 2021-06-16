@@ -57,6 +57,7 @@ ALGORITHM_PARAMS_ADDITIONAL = {
     'SQL': {
         'type': 'SQL',
         'kwargs': {
+            'reparameterize': REPARAMETERIZE,
             'policy_lr': 3e-4,
             'target_update_interval': 1,
             'n_initial_exploration_steps': int(1e3),

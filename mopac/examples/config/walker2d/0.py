@@ -1,6 +1,6 @@
 params = {
     'type': 'MOPAC',
-    'universe': 'gym',
+    'universe': 'dmc',
     'domain': 'Walker2d',
     'task': 'v2',
 
