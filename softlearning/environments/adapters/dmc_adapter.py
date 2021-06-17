@@ -5,8 +5,6 @@ import gym
 from gym import spaces, wrappers
 import dmc2gym
 from .softlearning_env import SoftlearningEnv
-from softlearning.environments.gym import register_environments
-from softlearning.environments.gym.wrappers import NormalizeActionWrapper
 from collections import defaultdict
 
 
@@ -16,26 +14,6 @@ def parse_domain_task(gym_id):
     task = '-'.join(domain_task_parts[1:])
 
     return domain, task
-
-
-CUSTOM_GYM_ENVIRONMENT_IDS = register_environments()
-CUSTOM_GYM_ENVIRONMENTS = defaultdict(list)
-
-for gym_id in CUSTOM_GYM_ENVIRONMENT_IDS:
-    domain, task = parse_domain_task(gym_id)
-    CUSTOM_GYM_ENVIRONMENTS[domain].append(task)
-
-CUSTOM_GYM_ENVIRONMENTS = dict(CUSTOM_GYM_ENVIRONMENTS)
-
-GYM_ENVIRONMENT_IDS = tuple(gym.envs.registry.env_specs.keys())
-GYM_ENVIRONMENTS = defaultdict(list)
-
-
-for gym_id in GYM_ENVIRONMENT_IDS:
-    domain, task = parse_domain_task(gym_id)
-    GYM_ENVIRONMENTS[domain].append(task)
-
-GYM_ENVIRONMENTS = dict(GYM_ENVIRONMENTS)
 
 
 class DmcAdapter(SoftlearningEnv):
@@ -87,8 +65,6 @@ class DmcAdapter(SoftlearningEnv):
         if isinstance(env.observation_space, spaces.Dict):
             observation_keys = (
                 observation_keys or list(env.observation_space.spaces.keys()))
-        if normalize:
-            env = NormalizeActionWrapper(env)
 
         self._env = env
 
